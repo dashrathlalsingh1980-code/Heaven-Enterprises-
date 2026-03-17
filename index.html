@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heaven Enterprises - Solar Solutions | All Rajasthan</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'solar-blue': '#1e40af',
+                        'solar-yellow': '#fbbf24',
+                        'solar-light': '#fef3c7',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .solar-gradient {
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #fbbf24 100%);
+        }
+        .solar-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .solar-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .chatbot-bubble {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .solar-icon {
+            filter: drop-shadow(0 0 3px rgba(251, 191, 36, 0.5));
+        }
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .logo-image {
+            height: 50px;
+            width: auto;
+        }
+        .logo-text {
+            font-family: 'Arial', sans-serif;
+        }
+        .logo-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1e40af;
+            line-height: 1;
+        }
+        .logo-subtitle {
+            font-size: 14px;
+            color: #059669;
+            font-weight: 600;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        const { useState } = React;
+
+        function App() {
+            const [isMenuOpen, setIsMenuOpen] = useState(false);
+            const [isChatOpen, setIsChatOpen] = useState(false);
+            const [chatMessages, setChatMessages] = useState([
+                { type: 'bot', text: 'Welcome to Heaven Enterprises! How can I help you book your solar installation today?' }
+            ]);
+            const [userInput, setUserInput] = useState('');
+            const [appointmentData, setAppointmentData] = useState({
+                name: '',
+                phone: '',
+                email: '',
+                date: '',
+                time: '',
+                address: ''
+            });
+
+            const handleSendMessage = () => {
+                if (userInput.trim()) {
+                    const newMessages = [...chatMessages, { type: 'user', text: userInput }];
+                    setChatMessages(newMessages);
+                    
+                    // Simple bot response
+                    setTimeout(() => {
+                        let botResponse = '';
+                        const input = userInput.toLowerCase();
+                        
+                        if (input.includes('book') || input.includes('appointment')) {
+                            botResponse = 'I can help you book an appointment! Please provide:\n1. Your name\n2. Phone number\n3. Preferred date and time\n4. Your address in Rajasthan';
+                        } else if (input.includes('pm surya') || input.includes('scheme')) {
+                            botResponse = 'PM Surya Ghar Yojna offers:\n• Subsidy up to ₹78,000 for 3kW system\n• Free electricity for 25+ years\n• Government approved scheme\n• Reduced electricity bills\n\nWould you like to know more or book under this scheme?';
+                        } else if (input.includes('cost') || input.includes('price')) {
+                            botResponse = 'Our solar systems start from ₹45,000 for 1kW. With PM Surya Ghar Yojna subsidy, you can save up to ₹78,000!\n\nWould you like a detailed quote?';
+                        } else {
+                            botResponse = 'Thank you for your inquiry! Our solar expert will contact you soon at +91 9887099783. You can also email us at enterprisesheaven81@gmail.com';
+                        }
+                        
+                        setChatMessages([...newMessages, { type: 'bot', text: botResponse }]);
+                    }, 1000);
+                    
+                    setUserInput('');
+                }
+            };
+
+            const handleAppointmentSubmit = (e) => {
+                e.preventDefault();
+                const confirmation = `Appointment booked successfully!\n\nDetails:\nName: ${appointmentData.name}\nPhone: ${appointmentData.phone}\nDate: ${appointmentData.date}\nTime: ${appointmentData.time}\nAddress: ${appointmentData.address}\n\nOur team will contact you soon at +91 9887099783`;
+                setChatMessages([...chatMessages, { type: 'bot', text: confirmation }]);
+                setAppointmentData({ name: '', phone: '', email: '', date: '', time: '', address: '' });
+            };
+
+            return (
+                <div className="min-h-screen bg-white">
+                    {/* Navigation */}
+                    <nav className="bg-white shadow-lg fixed w-full top-0 z-40 border-b-4 border-solar-yellow">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="flex justify-between items-center h-16">
+                                <div className="logo-container">
+                                    <img 
+                                        src="heaven_enterprises_logo.png" 
+                                        alt="Heaven Enterprises Logo" 
+                                        className="logo-image"
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            document.querySelector('.fallback-logo').style.display = 'flex';
+                                        }}
+                                    />
+                                    <div className="fallback-logo" style={{display: 'none'}}>
+                                        <div className="w-10 h-10 bg-solar-yellow rounded-full flex items-center justify-center">
+                                            <i className="fas fa-sun text-solar-blue text-xl"></i>
+                                        </div>
+                                    </div>
+                                    <div className="logo-text">
+                                        <div className="logo-title">HEAVEN</div>
+                                        <div className="logo-subtitle">ENTERPRISES</div>
+                                        <p className="text-xs text-gray-600 mt-1">Your Partner for Scheme Benefits</p>
+                                    </div>
+                                </div>
+                                <div className="hidden md:flex space-x-6">
+                                    <a href="#home" className="text-gray-700 hover:text-solar-blue font-medium transition-colors">Home</a>
+                                    <a href="#schemes" className="text-gray-700 hover:text-solar-blue font-medium transition-colors">Schemes</a>
+                                    <a href="#products" className="text-gray-700 hover:text-solar-blue font-medium transition-colors">Products</a>
+                                    <a href="#about" className="text-gray-700 hover:text-solar-blue font-medium transition-colors">About</a>
+                                    <a href="#contact" className="text-gray-700 hover:text-solar-blue font-medium transition-colors">Contact</a>
+                                </div>
+                                <button 
+                                    className="md:hidden"
+                                    onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                >
+                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        {isMenuOpen && (
+                            <div className="md:hidden bg-white border-t">
+                                <div className="px-2 pt-2 pb-3 space-y-1">
+                                    <a href="#home" className="block px-3 py-2 text-gray-700 hover:text-solar-blue font-medium">Home</a>
+                                    <a href="#schemes" className="block px-3 py-2 text-gray-700 hover:text-solar-blue font-medium">Schemes</a>
+                                    <a href="#products" className="block px-3 py-2 text-gray-700 hover:text-solar-blue font-medium">Products</a>
+                                    <a href="#about" className="block px-3 py-2 text-gray-700 hover:text-solar-blue font-medium">About</a>
+                                    <a href="#contact" className="block px-3 py-2 text-gray-700 hover:text-solar-blue font-medium">Contact</a>
+                                </div>
+                            </div>
+                        )}
+                    </nav>
+
+                    {/* Hero Section */}
+                    <section id="home" className="solar-gradient text-white pt-24 pb-20">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="text-center">
+                                <div className="mb-6 flex justify-center">
+                                    <img 
+                                        src="heaven_enterprises_logo.png" 
+                                        alt="Heaven Enterprises Logo" 
+                                        className="h-24 md:h-32 logo-image"
+                                        onError={(e) => {
+                                            e.target.style.display = 'none';
+                                            document.querySelector('.hero-fallback-logo').style.display = 'block';
+                                        }}
+                                    />
+                                    <div className="hero-fallback-logo" style={{display: 'none'}}>
+                                        <i className="fas fa-sun text-6xl md:text-8xl solar-icon"></i>
+                                    </div>
+                                </div>
+                                <h2 className="text-4xl md:text-6xl font-bold mb-6">
+                                    Heaven Enterprises
+                                </h2>
+                                <p className="text-xl md:text-2xl mb-4">
+                                    Your Trusted Solar Partner Across Rajasthan
+                                </p>
+                                <p className="text-lg mb-8 opacity-90">
+                                    Government Approved • 10+ Year Warranty • Expert Installation
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <button 
+                                        onClick={() => setIsChatOpen(true)}
+                                        className="bg-white text-solar-blue px-8 py-3 rounded-full font-bold hover:bg-solar-light transition-colors"
+                                    >
+                                        <i className="fas fa-calendar-check mr-2"></i>
+                                        Book Appointment
+                                    </button>
+                                    <button className="border-2 border-white text-white px-8 py-3 rounded-full font-bold hover:bg-white hover:text-solar-blue transition-colors">
+                                        <i className="fas fa-phone mr-2"></i>
+                                        Call: 9887099783
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* PM Surya Ghar Yojna Section */}
+                    <section id="schemes" className="py-20 bg-solar-light">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="text-center mb-12">
+                                <h3 className="text-3xl md:text-4xl font-bold text-solar-blue mb-4">
+                                    PM Surya Ghar Yojna
+                                </h3>
+                                <p className="text-xl text-gray-700">Government Approved Solar Scheme</p>
+                            </div>
+                            <div className="bg-white rounded-lg shadow-xl p-8">
+                                <div className="grid md:grid-cols-2 gap-8 items-center">
+                                    <div>
+                                        <div className="bg-solar-yellow text-white p-4 rounded-lg mb-6">
+                                            <h4 className="text-2xl font-bold mb-2">Subsidy Up To</h4>
+                                            <p className="text-4xl font-bold">₹78,000</p>
+                                            <p className="text-sm">For 3kW System</p>
+                                        </div>
+                                        <ul className="space-y-3">
+                                            <li className="flex items-center">
+                                                <i className="fas fa-check-circle text-green-500 mr-3"></i>
+                                                <span>Free electricity for 25+ years</span>
+                                            </li>
+                                            <li className="flex items-center">
+                                                <i className="fas fa-check-circle text-green-500 mr-3"></i>
+                                                <span>Reduced electricity bills by 90%</span>
+                                            </li>
+                                            <li className="flex items-center">
+                                                <i className="fas fa-check-circle text-green-500 mr-3"></i>
+                                                <span>Government approved & certified</span>
+                                            </li>
+                                            <li className="flex items-center">
+                                                <i className="fas fa-check-circle text-green-500 mr-3"></i>
+                                                <span>Easy EMI options available</span>
+                                            </li>
+                                            <li className="flex items-center">
+                                                <i className="fas fa-check-circle text-green-500 mr-3"></i>
+                                                <span>Net metering facility</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div className="bg-gradient-to-r from-solar-blue to-blue-600 text-white p-8 rounded-lg">
+                                        <h4 className="text-2xl font-bold mb-6">Eligibility Criteria</h4>
+                                        <ul className="space-y-2 mb-6">
+                                            <li>• Residential property owners</li>
+                                            <li>• Valid electricity connection</li>
+                                            <li>• Rooftop space for solar panels</li>
+                                            <li>• All Rajasthan residents eligible</li>
+                                        </ul>
+                                        <button 
+                                            onClick={() => setIsChatOpen(true)}
+                                            className="w-full bg-solar-yellow text-solar-blue py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors"
+                                        >
+                                            Check Your Eligibility
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Products Section */}
+                    <section id="products" className="py-20">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="text-center mb-12">
+                                <h3 className="text-3xl md:text-4xl font-bold text-solar-blue mb-4">
+                                    Premium Solar Products
+                                </h3>
+                                <p className="text-xl text-gray-700">Top Brands with 10+ Year Warranty</p>
+                            </div>
+                            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                                {[
+                                    { name: 'Adani Solar', desc: 'High efficiency panels with 25 year warranty', icon: 'fa-industry' },
+                                    { name: 'Tata Power Solar', desc: 'Trusted brand with superior performance', icon: 'fa-bolt' },
+                                    { name: 'WAREE Solar', desc: 'Leading manufacturer with innovative tech', icon: 'fa-solar-panel' },
+                                    { name: 'Luminous Solar', desc: 'Reliable solutions for all needs', icon: 'fa-lightbulb' }
+                                ].map((brand, index) => (
+                                    <div key={index} className="bg-white p-6 rounded-lg shadow-lg solar-card border-2 border-solar-yellow">
+                                        <div className="bg-solar-blue text-white w-16 h-16 rounded-full flex items-center justify-center mb-4">
+                                            <i className={`fas ${brand.icon} text-2xl`}></i>
+                                        </div>
+                                        <h4 className="text-xl font-bold text-solar-blue mb-2">{brand.name}</h4>
+                                        <p className="text-gray-600 text-sm mb-4">{brand.desc}</p>
+                                        <div className="text-green-600 font-semibold">
+                                            <i className="fas fa-shield-alt mr-1"></i>
+                                            10+ Year Warranty
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* About Section */}
+                    <section id="about" className="py-20 bg-gray-50">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="grid md:grid-cols-2 gap-12 items-center">
+                                <div>
+                                    <h3 className="text-3xl md:text-4xl font-bold text-solar-blue mb-6">
+                                        About Heaven Enterprises
+                                    </h3>
+                                    <p className="text-lg text-gray-700 mb-6">
+                                        Heaven Enterprises is Rajasthan's trusted solar energy solutions provider, 
+                                        committed to bringing clean and sustainable energy to homes and businesses 
+                                        across the state.
+                                    </p>
+                                    <p className="text-lg text-gray-700 mb-6">
+                                        With years of experience and partnerships with leading solar manufacturers, 
+                                        we ensure quality installations backed by 10+ year warranties and exceptional 
+                                        customer service.
+                                    </p>
+                                    <div className="grid grid-cols-2 gap-6">
+                                        <div className="text-center">
+                                            <div className="text-3xl font-bold text-solar-blue mb-2">1000+</div>
+                                            <div className="text-gray-600">Happy Customers</div>
+                                        </div>
+                                        <div className="text-center">
+                                            <div className="text-3xl font-bold text-solar-blue mb-2">All Rajasthan</div>
+                                            <div className="text-gray-600">Service Area</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="bg-white p-8 rounded-lg shadow-lg">
+                                    <h4 className="text-2xl font-bold text-solar-blue mb-6">Why Choose Us?</h4>
+                                    <ul className="space-y-4">
+                                        <li className="flex items-start">
+                                            <i className="fas fa-check text-green-500 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong>Government Approved</strong>
+                                                <p className="text-gray-600">PM Surya Ghar Yojna registered partner</p>
+                                            </div>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <i className="fas fa-check text-green-500 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong>10+ Year Warranty</strong>
+                                                <p className="text-gray-600">Long-term peace of mind guaranteed</p>
+                                            </div>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <i className="fas fa-check text-green-500 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong>Expert Installation</strong>
+                                                <p className="text-gray-600">Certified technicians across Rajasthan</p>
+                                            </div>
+                                        </li>
+                                        <li className="flex items-start">
+                                            <i className="fas fa-check text-green-500 mt-1 mr-3"></i>
+                                            <div>
+                                                <strong>24/7 Support</strong>
+                                                <p className="text-gray-600">Always here to help you</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Contact Section */}
+                    <section id="contact" className="py-20 bg-solar-blue text-white">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="text-center mb-12">
+                                <h3 className="text-3xl md:text-4xl font-bold mb-4">
+                                    Get In Touch
+                                </h3>
+                                <p className="text-xl">Ready to go solar? Contact us today!</p>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-12">
+                                <div>
+                                    <div className="bg-white p-8 rounded-lg text-gray-800">
+                                        <h4 className="text-2xl font-bold text-solar-blue mb-6">Quick Contact</h4>
+                                        <div className="space-y-4">
+                                            <div className="flex items-center">
+                                                <i className="fas fa-phone text-solar-yellow text-xl mr-4"></i>
+                                                <div>
+                                                    <strong>Mobile:</strong> +91 9887099783
+                                                </div>
+                                            </div>
+                                            <div className="flex items-center">
+                                                <i className="fas fa-envelope text-solar-yellow text-xl mr-4"></i>
+                                                <div>
+                                                    <strong>Email:</strong> enterprisesheaven81@gmail.com
+                                                </div>
+                                            </div>
+                                            <div className="flex items-start">
+                                                <i className="fas fa-map-marker-alt text-solar-yellow text-xl mr-4 mt-1"></i>
+                                                <div>
+                                                    <strong>Head Office:</strong><br/>
+                                                    Rajasthan, India<br/>
+                                                    <span className="text-sm text-gray-600">(Service available across all Rajasthan)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <form onSubmit={handleAppointmentSubmit} className="bg-white p-8 rounded-lg text-gray-800">
+                                        <h4 className="text-2xl font-bold text-solar-blue mb-6">Book Appointment</h4>
+                                        <div className="space-y-4">
+                                            <input 
+                                                type="text" 
+                                                placeholder="Your Name"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-solar-blue"
+                                                value={appointmentData.name}
+                                                onChange={(e) => setAppointmentData({...appointmentData, name: e.target.value})}
+                                                required
+                                            />
+                                            <input 
+                                                type="tel" 
+                                                placeholder="Phone Number"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-solar-blue"
+                                                value={appointmentData.phone}
+                                                onChange={(e) => setAppointmentData({...appointmentData, phone: e.target.value})}
+                                                required
+                                            />
+                                            <input 
+                                                type="email" 
+                                                placeholder="Email Address"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-solar-blue"
+                                                value={appointmentData.email}
+                                                onChange={(e) => setAppointmentData({...appointmentData, email: e.target.value})}
+                                                required
+                                            />
+                                            <input 
+                                                type="date" 
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-solar-blue"
+                                                value={appointmentData.date}
+                                                onChange={(e) => setAppointmentData({...appointmentData, date: e.target.value})}
+                                                required
+                                            />
+                                            <input 
+                                                type="time" 
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-solar-blue"
+                                                value={appointmentData.time}
+                                                onChange={(e) => setAppointmentData({...appointmentData, time: e.target.value})}
+                                                required
+                                            />
+                                            <textarea 
+                                                placeholder="Your Address in Rajasthan"
+                                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-solar-blue"
+                                                rows="3"
+                                                value={appointmentData.address}
+                                                onChange={(e) => setAppointmentData({...appointmentData, address: e.target.value})}
+                                                required
+                                            ></textarea>
+                                            <button 
+                                                type="submit" 
+                                                className="w-full bg-solar-yellow text-solar-blue py-3 rounded-lg font-bold hover:bg-yellow-400 transition-colors"
+                                            >
+                                                Book Appointment
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="bg-gray-900 text-white py-12">
+                        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                            <div className="grid md:grid-cols-4 gap-8">
+                                <div>
+                                    <div className="flex items-center space-x-3 mb-4">
+                                        <img 
+                                            src="heaven_enterprises_logo.png" 
+                                            alt="Heaven Enterprises Logo" 
+                                            className="h-12 logo-image"
+                                            onError={(e) => {
+                                                e.target.style.display = 'none';
+                                                document.querySelector('.footer-fallback-logo').style.display = 'flex';
+                                            }}
+                                        />
+                                        <div className="footer-fallback-logo" style={{display: 'none'}}>
+                                            <div className="w-10 h-10 bg-solar-yellow rounded-full flex items-center justify-center">
+                                                <i className="fas fa-sun text-solar-blue text-xl"></i>
+                                            </div>
+                                        </div>
+                                        <h4 className="text-xl font-bold text-white">Heaven Enterprises</h4>
+                                    </div>
+                                    <p className="text-gray-400">
+                                        Your trusted solar partner across Rajasthan with government approved schemes and 10+ year warranty.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h5 className="font-semibold mb-4">Quick Links</h5>
+                                    <ul className="space-y-2 text-gray-400">
+                                        <li><a href="#home" className="hover:text-solar-yellow">Home</a></li>
+                                        <li><a href="#schemes" className="hover:text-solar-yellow">PM Surya Ghar Yojna</a></li>
+                                        <li><a href="#products" className="hover:text-solar-yellow">Products</a></li>
+                                        <li><a href="#contact" className="hover:text-solar-yellow">Contact</a></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 className="font-semibold mb-4">Our Brands</h5>
+                                    <ul className="space-y-2 text-gray-400">
+                                        <li>Adani Solar</li>
+                                        <li>Tata Power Solar</li>
+                                        <li>WAREE Solar</li>
+                                        <li>Luminous Solar</li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h5 className="font-semibold mb-4">Contact Info</h5>
+                                    <ul className="space-y-2 text-gray-400">
+                                        <li><i className="fas fa-phone mr-2"></i>+91 9887099783</li>
+                                        <li><i className="fas fa-envelope mr-2"></i>enterprisesheaven81@gmail.com</li>
+                                        <li><i className="fas fa-map-marker-alt mr-2"></i>All Rajasthan</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+                                <p>&copy; 2024 Heaven Enterprises. All rights reserved. | Government Approved Solar Partner</p>
+                            </div>
+                        </div>
+                    </footer>
+
+                    {/* Chatbot */}
+                    <div className="fixed bottom-6 right-6 z-50">
+                        {isChatOpen && (
+                            <div className="bg-white rounded-lg shadow-2xl w-80 h-96 mb-4 flex flex-col">
+                                <div className="bg-solar-blue text-white p-4 rounded-t-lg flex justify-between items-center">
+                                    <div>
+                                        <h4 className="font-bold">Solar Assistant</h4>
+                                        <p className="text-xs opacity-90">We typically reply in minutes</p>
+                                    </div>
+                                    <button 
+                                        onClick={() => setIsChatOpen(false)}
+                                        className="text-white hover:text-gray-200"
+                                    >
+                                        <i className="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                                    {chatMessages.map((msg, index) => (
+                                        <div key={index} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
+                                            <div className={`max-w-xs px-4 py-2 rounded-lg ${
+                                                msg.type === 'user' 
+                                                    ? 'bg-solar-blue text-white' 
+                                                    : 'bg-gray-100 text-gray-800'
+                                            }`}>
+                                                {msg.text}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                                <div className="p-4 border-t">
+                                    <div className="flex space-x-2">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Type your message..."
+                                            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-solar-blue"
+                                            value={userInput}
+                                            onChange={(e) => setUserInput(e.target.value)}
+                                            onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                                        />
+                                        <button 
+                                            onClick={handleSendMessage}
+                                            className="bg-solar-blue text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+                                        >
+                                            <i className="fas fa-paper-plane"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        )}
+                        <button 
+                            onClick={() => setIsChatOpen(!isChatOpen)}
+                            className="bg-solar-yellow text-solar-blue w-14 h-14 rounded-full shadow-lg hover:bg-yellow-400 transition-all chatbot-bubble flex items-center justify-center"
+                        >
+                            <i className="fas fa-comments text-xl"></i>
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+</html>
